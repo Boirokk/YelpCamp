@@ -8,6 +8,8 @@ const campgrounds = require('./routes/campgrounds');
 const reviews = require('./routes/reviews');
 const session = require('express-session');
 const flash = require('connect-flash');
+const passport = require('passport');
+const LocalStrategy = require('passport-local');
 
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
@@ -52,9 +54,9 @@ app.get('/', (req, res) => {
     res.render('home')
 });
 
-app.all('*', (req, res, next) => {
-    next(new ExpressError('Page not found', 404));
-});
+// app.all('*', (req, res, next) => {
+//     next(new ExpressError('Page not found', 404));
+// });
 
 // Catch any uncaught errors
 app.use((err, req, res) => {
