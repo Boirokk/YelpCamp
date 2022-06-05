@@ -24,8 +24,14 @@ router.post('/', isLoggedIn, validateCampground, catchAsync(async (req, res, nex
     res.redirect(`/campgrounds/${campground._id}`)
 }));
 
+// Show Page
 router.get('/:id', catchAsync(async (req, res, next) => {
-    const campground = await Campground.findById(req.params.id).populate('reviews').populate('author');
+    const campground = await Campground.findById(req.params.id).populate({
+        path: 'reviews',
+        populate: {
+            path: 'author'
+        }
+    }).populate('author');
     if (!campground) {
         req.flash('error', 'Campground does not exist!');
         return res.redirect('/campgrounds');
@@ -33,6 +39,7 @@ router.get('/:id', catchAsync(async (req, res, next) => {
     res.render('campgrounds/show', {campground});
 }));
 
+// Edit Form
 router.get('/:id/edit', isLoggedIn, isAuthor, catchAsync(async (req, res, next) => {
     const {id} = req.params
     const campground = await Campground.findById(id);
