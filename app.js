@@ -1,3 +1,6 @@
+// Chad Czilli 05-01-2022
+// Social Media App to keep track of your movie collection and TV series
+
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
@@ -15,6 +18,7 @@ const campgroundRoutes = require('./routes/campgrounds');
 const reviewRoutes = require('./routes/reviews');
 const userRoutes = require('./routes/users');
 
+// Connect to database
 mongoose.connect('mongodb://localhost:27017/yelp-camp', {
     useNewUrlParser: true,
     useCreateIndex: true,
@@ -32,6 +36,7 @@ app.use(express.urlencoded({extended: true}));
 app.use(methodOverride('_method'));
 app.use(express.static('public'));
 
+// Session/Cookies
 const sessionConfig = {
     secret: 'thisshouldbeabettersecret!',
     resave: false,
@@ -43,14 +48,18 @@ const sessionConfig = {
     }
 }
 app.use(session(sessionConfig));
+
+// Use flash messages
 app.use(flash());
 
+// Authentication
 app.use(passport.initialize());
 app.use(passport.session());
 passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+// Local Variables - Accessible throughout the program
 app.use((req, res, next) => {
     res.locals.currentUser = req.user;
     res.locals.success = req.flash('success');
@@ -58,9 +67,11 @@ app.use((req, res, next) => {
     next();
 });
 
+// Routes
 app.use('/', userRoutes);
 app.use('/campgrounds', campgroundRoutes);
 app.use('/campgrounds/:id/reviews', reviewRoutes);
+
 
 app.get('/', (req, res) => {
     res.render('home');
@@ -77,6 +88,7 @@ app.use((err, req, res, next) => {
     res.status(statusCode).render('error', {err});
 });
 
+// Start the server
 app.listen(3000, () => {
     console.log('Serving on port 3000')
 })
