@@ -1,6 +1,10 @@
 // Chad Czilli 05-01-2022
 // Social Media App to keep track of your movie collection and TV series
 
+if (process.env.NODE_ENV !== 'production') {
+    require('dotenv').config();
+}
+
 const express = require('express');
 const path = require('path');
 const mongoose = require('mongoose');
